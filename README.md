@@ -26,7 +26,9 @@ Usage
 
 Sane defaults come included, but everything is configurable.
 
-All PHP settings are controlled by a single dict `_php_user_settings`:
+All PHP settings are controlled by dict `_php_user_settings`,
+Composer by dict `_composer_user_settings` and
+Xdebug by dict `_xdebug_user_settings`.
 
 ```yaml
 - set_fact:
