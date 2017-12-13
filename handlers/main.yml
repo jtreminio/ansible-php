@@ -1,0 +1,9 @@
+---
+
+- name: restart php-fpm
+  service:
+    name: "php{{ php_settings.version }}-fpm"
+    state: restarted
+  when: ansible_os_family == 'Debian'
+
+# todo: rhel

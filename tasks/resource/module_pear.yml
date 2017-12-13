@@ -1,0 +1,6 @@
+---
+
+- name: "install php pear module {{ v_module }}"
+  pear:
+    name: "{{ v_module }}"
+    state: present

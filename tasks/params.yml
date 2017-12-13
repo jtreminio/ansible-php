@@ -1,0 +1,38 @@
+---
+
+- set_fact:
+    php_settings: "{{ php_settings|combine(_php_user_settings.settings|d({})) }}"
+    php_conf: "{{ php_conf|combine(_php_user_settings.conf|d({})) }}"
+    php_modules_php: "{{ php_modules_php|list_append(_php_user_settings.modules.php|d([])) }}"
+    php_modules_pear: "{{ php_modules_pear|list_append(_php_user_settings.modules.pear|d([])) }}"
+    php_modules_pecl: "{{ php_modules_pecl|list_append(_php_user_settings.modules.pecl|d([])) }}"
+    php_ini: "{{ php_ini|combine(_php_user_settings.ini|d({})) }}"
+    php_fpm_settings: "{{ php_fpm_settings|combine(_php_user_settings.fpm.settings|d({})) }}"
+    php_fpm_ini: "{{ php_fpm_ini|combine(_php_user_settings.fpm.ini|d({})) }}"
+    php_fpm_pools: "{{ php_fpm_pools|list_append(_php_user_settings.fpm.pools|d([])) }}"
+
+- set_fact:
+    _php_versions:
+      version: "{{ '%.1f'|format(php_settings.version|float) }}" # 7.1
+      version_no_dot: "{{ ('%.1f'|format(php_settings.version|float))|replace('.', '') }}" # 71
+
+- set_fact:
+    php_settings: "{{ php_settings|combine(_php_versions) }}"
+
+- set_fact:
+    _php_conf_dir:
+      config_dir: "{{ _php_config_dir_base }}/{{ php_settings.version }}"
+  when: ansible_os_family == 'Debian'
+
+# todo: _php_conf_dir rhel
+
+- set_fact:
+    php_conf: "{{ php_conf|combine(_php_conf_dir) }}"
+
+- set_fact:
+    composer_install: "{{ _composer_user_settings.install|d(composer_install) }}"
+    composer_settings: "{{ composer_settings|combine(_composer_user_settings.settings|d({})) }}"
+
+- set_fact:
+    xdebug_install: "{{ _xdebug_user_settings.install|d(xdebug_install) }}"
+    xdebug_settings: "{{ xdebug_settings|combine(_xdebug_user_settings.settings|d({})) }}"

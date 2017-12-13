@@ -1,0 +1,17 @@
+---
+
+- ini_file:
+    path: "{{ ini_filepath }}"
+    section: "{{ ini_section }}"
+    option: "{{ ini_option }}"
+    value: "{{ ini_value }}"
+  when: ini_option is string
+
+- ini_file:
+    path: "{{ ini_filepath }}"
+    section: "{{ ini_section }}"
+    option: "{{ php_ini_inner.key }}"
+    value: "{{ php_ini_inner.value }}"
+  loop_control:
+    loop_var: php_ini_inner
+  with_dict: "{{ ini_option is mapping | ternary(ini_option, {}) }}"

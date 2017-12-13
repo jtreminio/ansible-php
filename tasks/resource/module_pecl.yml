@@ -1,0 +1,6 @@
+---
+
+- name: "install php pecl module {{ v_module }}"
+  pear:
+    name: "pecl/{{ v_module }}"
+    state: present

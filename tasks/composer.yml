@@ -1,0 +1,19 @@
+---
+
+- include_vars:
+    file: "{{ playbook_dir }}/roles/geerlingguy.composer/defaults/main.yml"
+
+- set_fact:
+    composer_path: "{{ composer_settings.path|d(composer_path) }}"
+    composer_keep_updated: "{{ composer_settings.keep_updated|d(composer_keep_updated) }}"
+    composer_version: "{{ composer_settings.version|d(composer_version) }}"
+    composer_home_path: "{{ composer_settings.home_path|d(composer_home_path) }}"
+    composer_home_owner: "{{ composer_settings.home_owner|d(composer_home_owner) }}"
+    composer_home_group: "{{ composer_settings.home_group|d(composer_home_group) }}"
+    composer_global_packages: "{{ composer_settings.global_packages|d(composer_global_packages) }}"
+    composer_add_to_path: "{{ composer_settings.add_to_path|d(composer_add_to_path) }}"
+    composer_add_project_to_path: "{{ composer_settings.add_project_to_path|d(composer_add_project_to_path) }}"
+    composer_github_oauth_token: "{{ composer_settings.github_oauth_token|d(composer_github_oauth_token) }}"
+
+- include_role:
+    name: geerlingguy.composer

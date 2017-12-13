@@ -1,0 +1,75 @@
+---
+
+__jtreminio_manage_firewall: false
+
+_php_config_dir_base: ''
+
+php_settings:
+  version: 7.2
+  package_state: present
+
+php_conf:
+  config_dir: '' # Depends on PHP version and distro
+
+php_modules_php:
+  - cli
+
+php_modules_pear: []
+
+php_modules_pecl: []
+
+php_ini:
+  date.timezone: UTC
+
+php_fpm_settings:
+  service_state: started
+  service_enabled: 'yes'
+
+php_fpm_ini:
+  error_log: /var/log/php-fpm.log
+
+php_fpm_pools: [] # uses _php_fpm_pool
+
+_php_fpm_pool:
+  name: 'www'
+  ini:
+    prefix: '/var/$pool'
+    listen: '127.0.0.1:9000'
+    listen.owner: www-data
+    listen.group: www-data
+    security.limit_extensions: .php
+    user: www-data
+    group: www-data
+    pm: dynamic
+    pm.max_children: 5
+    pm.start_servers: 2
+    pm.min_spare_servers: 1
+    pm.max_spare_servers: 3
+
+###
+
+composer_install: 0
+
+composer_settings:
+  path: /usr/local/bin/composer
+  # keep_updated: false
+  # version: ~
+  # home_path: ~
+  # home_owner: ~
+  # home_group: ~
+  # add_to_path: ~
+  # add_project_to_path: ~
+  # github_oauth_token: ~
+  # global_packages: []
+
+###
+
+xdebug_install: 0
+
+xdebug_settings:
+  xdebug.default_enable: '1'
+  xdebug.remote_autostart: '0'
+  xdebug.remote_connect_back: '1'
+  xdebug.remote_enable: '1'
+  xdebug.remote_handler: dbgp
+  xdebug.remote_port: '9000'

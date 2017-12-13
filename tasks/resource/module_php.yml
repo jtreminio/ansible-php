@@ -1,0 +1,13 @@
+---
+
+- set_fact:
+    module: "{{ v_module }}"
+
+- set_fact:
+    module: "php{{ php_settings.version }}-{{ v_module }}"
+  when: ansible_os_family == 'Debian'
+
+- name: "install php module {{ module }}"
+  package:
+    name: "{{ module }}"
+    state: present

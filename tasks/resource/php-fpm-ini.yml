@@ -1,0 +1,29 @@
+---
+
+- set_fact:
+    pool: "{{ _php_fpm_pool|combine(v_pool|d({})) }}"
+
+- include_tasks: ini.yml
+  loop_control:
+    loop_var: lc_pool_ini
+  vars:
+    ini_filepath: "{{ php_conf.config_dir }}/fpm/pool.d/{{ pool.name }}.conf"
+    ini_section: "{{ pool.name }}"
+    ini_option: "{{ lc_pool_ini.key }}"
+    ini_value: "{{ lc_pool_ini.value }}"
+  with_dict: "{{ pool.ini }}"
+  notify:
+    - restart php-fpm
+
+- include_role:
+    name: jtreminio.common
+    tasks_from: firewall_add
+  loop_control:
+    loop_var: lc_rule
+  vars:
+    rule:
+      protocol: tcp
+      port: "{{ lc_rule.split(':')[-1] }}"
+      action: accept
+  with_items: "{{ pool.ini.listen }}"
+  when: __jtreminio_manage_firewall

@@ -1,0 +1,23 @@
+---
+
+- name: install xdebug
+  package:
+    name: php-xdebug
+    state: present
+
+- include: resource/ini.yml
+  loop_control:
+    loop_var: lc_xdebug
+  vars:
+    ini_filepath: "{{ php_conf.config_dir }}/mods-available/zzzz-custom.ini"
+    ini_section: 'XDEBUG'
+    ini_option: "{{ lc_xdebug.key }}"
+    ini_value: "{{ lc_xdebug.value }}"
+  with_dict: "{{ xdebug_settings }}"
+
+- copy:
+    src: "{{ role_path }}/files/xdebug.sh"
+    dest: '/usr/local/bin/xdebug'
+    owner: root
+    group: root
+    mode: '+x'

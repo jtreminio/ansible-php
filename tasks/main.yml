@@ -1,0 +1,52 @@
+---
+
+- include_vars: "{{ ansible_os_family|lower }}.yml"
+
+- include_tasks: params.yml
+
+- include_tasks: package.yml
+
+- include: resource/module_php.yml
+  loop_control:
+    loop_var: lc_module_php
+  vars:
+    v_module: "{{ lc_module_php }}"
+  with_items: "{{ php_modules_php }}"
+
+- include: resource/module_pear.yml
+  loop_control:
+    loop_var: lc_module_pear
+  vars:
+    v_module: "{{ lc_module_pear }}"
+  with_items: "{{ php_modules_pear }}"
+
+- include: resource/module_pecl.yml
+  loop_control:
+    loop_var: lc_module_pecl
+  vars:
+    v_module: "{{ lc_module_pecl }}"
+  with_items: "{{ php_modules_pecl }}"
+
+- include_tasks: resource/ini.yml
+  loop_control:
+    loop_var: lc_php_ini
+  vars:
+    ini_filepath: "{{ php_conf.config_dir }}/mods-available/zzzz-custom.ini"
+    ini_section: 'CUSTOM'
+    ini_option: "{{ lc_php_ini.key }}"
+    ini_value: "{{ lc_php_ini.value }}"
+  with_dict: "{{ php_ini }}"
+
+- file:
+    src: "{{ php_conf.config_dir }}/mods-available/zzzz-custom.ini"
+    dest: "{{ php_conf.config_dir }}/cli/conf.d/zzzz-custom.ini"
+    state: link
+
+- include_tasks: php-fpm.yml
+  when: '"fpm" in php_modules_php'
+
+- include_tasks: composer.yml
+  when: composer_install|int == 1
+
+- include_tasks: xdebug.yml
+  when: xdebug_install|int == 1

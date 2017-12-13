@@ -1,0 +1,33 @@
+---
+
+- include_tasks: resource/ini.yml
+  loop_control:
+    loop_var: lc_php_ini
+  vars:
+    ini_filepath: "{{ php_conf.config_dir }}/fpm/conf.d/zzzz-fpm.ini"
+    ini_section: 'CUSTOM-FPM'
+    ini_option: "{{ lc_php_ini.key }}"
+    ini_value: "{{ lc_php_ini.value }}"
+  with_dict: "{{ php_fpm_ini }}"
+  notify:
+    - restart php-fpm
+
+- purge_dir:
+    dir: "{{ php_conf.config_dir }}/fpm/pool.d"
+    keep: "{{ php_fpm_pools|json_query('[].name') | modify_list('(.*)','\\1.conf') }}"
+
+- include_tasks: resource/php-fpm-ini.yml
+  loop_control:
+    loop_var: lc_pool
+  vars:
+    v_pool: "{{ lc_pool }}"
+  with_items: "{{ php_fpm_pools }}"
+
+- file:
+    src: "{{ php_conf.config_dir }}/mods-available/zzzz-custom.ini"
+    dest: "{{ php_conf.config_dir }}/fpm/conf.d/zzzz-custom.ini"
+    state: link
+  notify:
+    - restart php-fpm
+
+- include_tasks: resource/php-fpm-service.yml
