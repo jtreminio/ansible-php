@@ -6,6 +6,3 @@ galaxy_info:
 dependencies:
   - name: jtreminio.common
     src: https://github.com/jtreminio/ansible-common
-  - name: geerlingguy.composer
-    src: https://github.com/jtreminio/ansible-common
-    version: 1.6.1
