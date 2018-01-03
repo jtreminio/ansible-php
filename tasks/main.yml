@@ -6,21 +6,21 @@
 
 - include_tasks: package.yml
 
-- include: resource/module_php.yml
+- include_tasks: resource/module_php.yml
   loop_control:
     loop_var: lc_module_php
   vars:
     v_module: "{{ lc_module_php }}"
   with_items: "{{ php_modules_php }}"
 
-- include: resource/module_pear.yml
+- include_tasks: resource/module_pear.yml
   loop_control:
     loop_var: lc_module_pear
   vars:
     v_module: "{{ lc_module_pear }}"
   with_items: "{{ php_modules_pear }}"
 
-- include: resource/module_pecl.yml
+- include_tasks: resource/module_pecl.yml
   loop_control:
     loop_var: lc_module_pecl
   vars:

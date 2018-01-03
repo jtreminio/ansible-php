@@ -5,7 +5,7 @@
     name: php-xdebug
     state: present
 
-- include: resource/ini.yml
+- include_tasks: resource/ini.yml
   loop_control:
     loop_var: lc_xdebug
   vars:
